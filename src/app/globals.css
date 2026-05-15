@@ -1,0 +1,117 @@
+
+
+@import "tailwindcss";
+
+:root {
+  /* Fondo principal: Celeste vibrante de la imagen */
+  --background-from: #075985; /* Azul oscuro */
+  --background-via: #38bdf8;  /* Celeste brillante */
+  --background-to: #ffffff;   /* Blanco */
+
+  /* Colores corporativos */
+  --primary: #1d71b8;   /* Azul SITCO */
+  --secondary: #7bc143; /* Verde COBECA */
+  --text-main: #ffffff; /* Texto principal sobre fondo oscuro */
+  --text-muted: #cbd5e1; /* Texto secundario */
+}
+
+body {
+  /* Aplicamos el degradado base al body */
+  background: linear-gradient(135deg, var(--background-from) 0%, var(--background-via) 50%, var(--background-to) 100%);
+  color: var(--text-main);
+}
+
+/* Sutil gradiente de fondo para que no sea plano */
+.bg-soft-gradient {
+  background: radial-gradient(circle at top right, #e2e8f0 0%, #f8fafc 100%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+@layer utilities {
+  .text-sitco {
+    color: var(--primary);
+  }
+  .bg-sitco {
+    background-color: var(--primary);
+  }
+  .text-cobeca {
+    color: var(--secondary);
+  }
+  .bg-cobeca {
+    background-color: var(--secondary);
+  }
+}
+
+
+@layer base {
+  * {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Scrollbar estilo "glass" para modales */
+.glass-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255, 255, 255, 0.28) rgba(255, 255, 255, 0.08);
+}
+
+.glass-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.glass-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+.glass-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+}
+
+.glass-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* Scrollbar suave en modales con fondo claro */
+.glass-scrollbar-light {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 23, 42, 0.22) rgba(15, 23, 42, 0.06);
+}
+
+.glass-scrollbar-light::-webkit-scrollbar {
+  width: 8px;
+}
+
+.glass-scrollbar-light::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.04);
+  border-radius: 999px;
+}
+
+.glass-scrollbar-light::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.18);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.glass-scrollbar-light::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.28);
+  background-clip: padding-box;
+}
