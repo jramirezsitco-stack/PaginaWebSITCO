@@ -176,7 +176,7 @@ export default function Home() {
           </motion.div>          
         </div>
         <div className="hidden md:flex gap-2 text-sm font-semibold bg-black/20 p-1.5 rounded-full border border-white/10">
-          <a href="#nosotros" className="px-5 py-2 rounded-full hover:bg-white/10 transition-colors">Nosotros</a>
+          <a href="#nosotros" className="px-5 py-2 rounded-full hover:bg-white/10 transition-colors">Prueba</a>
           <a href="#productos" className="px-5 py-2 rounded-full hover:bg-white/10 transition-colors">Productos</a>
           <a href="#blog" className="px-5 py-2 rounded-full hover:bg-white/10 transition-colors">Blog</a>
           <a href="#contacto" className="px-5 py-2 rounded-full hover:bg-white/20 transition-colors text-[#7bc143]">Contacto</a>
