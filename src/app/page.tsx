@@ -3,15 +3,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ChevronLeft, ChevronRight, ChevronUp, ShieldCheck, BarChart3, 
+  ChevronLeft, ChevronRight, ChevronUp, ChevronDown, ShieldCheck, BarChart3, 
   Clock, ArrowRight, Download, ArrowUp, DatabaseBackup, 
   Lectern, Send, Phone, Mail, MapPin, X
 } from 'lucide-react';
 import Image from 'next/image';
 
-// --- IMPORTACIONES PARA SWIPER ---
+// --- IMPORTACIONES PARA SWIPER --- //
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectFade, Autoplay, Pagination } from 'swiper/modules';
+import type { Swiper as SwiperType } from 'swiper';
 
 import 'swiper/css';
 import 'swiper/css/effect-fade';
@@ -31,6 +32,158 @@ interface BlogCardProps {
   category: string;
 }
 
+interface Product {
+  id: string;
+  title: string;
+  shortDesc: string;
+  fullDesc: string;
+  features: string[];
+  category: string;
+  badge?: string;
+  icon: React.ReactNode;
+  layout: 'featured' | 'wide' | 'compact' | 'medium' | 'compact-row';
+}
+
+const PRODUCTS: Product[] = [
+  {
+    id: 'smart-pharma',
+    title: 'Smart Pharma',
+    shortDesc: 'Nuestra herramienta líder de Inteligencia de Negocios. Analiza reportes, ventas y proyecciones con datos en tiempo real.',
+    fullDesc: 'Smart Pharma es la solución insignia de SITCO para el sector farmacéutico. Integra análisis de ventas, proyecciones de demanda y reportes administrativos en una plataforma homologada por el SENIAT. Diseñada para farmacias corporativas, afiliadas e independientes que buscan decisiones basadas en datos.',
+    features: [
+      'Reportes de Análisis Avanzado',
+      'Interfaz Intuitiva',
+      'Optimización de Inventarios',
+      'Homologación SENIAT v2.2.2',
+      'Dashboards en tiempo real',
+      'Gestión multi-sucursal',
+    ],
+    category: 'Inteligencia de Negocios',
+    badge: 'Producto estrella',
+    icon: <BarChart3 size={32} />,
+    layout: 'featured',
+  },
+  {
+    id: 'comparador-sitco',
+    title: 'Comparador SITCO',
+    shortDesc: 'Analiza precios y disponibilidad entre proveedores de forma automatizada.',
+    fullDesc: 'El Comparador SITCO agiliza la toma de decisiones de compra al contrastar precios, existencias y condiciones comerciales entre múltiples proveedores. Reduce tiempos de cotización y maximiza el margen de tu farmacia con información actualizada.',
+    features: [
+      'Comparación automática de precios',
+      'Alertas de disponibilidad',
+      'Historial de cotizaciones',
+      'Integración con inventario',
+    ],
+    category: 'Compras',
+    icon: <ArrowRight size={24} />,
+    layout: 'wide',
+  },
+  {
+    id: 'sitco-pos',
+    title: 'SITCO POS',
+    shortDesc: 'Punto de Venta robusto.',
+    fullDesc: 'SITCO POS es un sistema de punto de venta diseñado para el ritmo exigente de las farmacias. Procesa transacciones de forma rápida y segura, con control de caja, facturación y sincronización con el resto del ecosistema SITCO.',
+    features: [
+      'Facturación ágil',
+      'Control de caja integrado',
+      'Soporte para múltiples formas de pago',
+      'Sincronización en la nube',
+    ],
+    category: 'Ventas',
+    icon: <ShieldCheck size={32} />,
+    layout: 'compact',
+  },
+  {
+    id: 'gestor-respaldo',
+    title: 'Gestor de Respaldo',
+    shortDesc: 'Protección crítica con backups automáticos.',
+    fullDesc: 'Protege la información crítica de tu farmacia con respaldos programados y automatizados. El Gestor de Respaldo SITCO garantiza la recuperación ante incidentes, cumpliendo estándares de seguridad para datos sensibles del sector salud.',
+    features: [
+      'Backups automáticos programados',
+      'Almacenamiento seguro',
+      'Restauración rápida',
+      'Monitoreo de integridad',
+    ],
+    category: 'Seguridad',
+    icon: <DatabaseBackup size={24} />,
+    layout: 'medium',
+  },
+  {
+    id: 'visor-precios',
+    title: 'Visor de Precios',
+    shortDesc: 'Transparencia inmediata para el cliente.',
+    fullDesc: 'Muestra precios actualizados al público de forma clara y profesional. El Visor de Precios mejora la experiencia del cliente y refuerza la confianza en tu farmacia con información visible y siempre al día.',
+    features: [
+      'Actualización en tiempo real',
+      'Pantalla dedicada para clientes',
+      'Diseño personalizable',
+      'Sincronización con inventario',
+    ],
+    category: 'Experiencia al cliente',
+    icon: <Lectern size={28} />,
+    layout: 'compact-row',
+  },
+];
+
+interface DrogueriaPartner {
+  id: string;
+  name: string;
+  logo: string;
+  comingSoon?: boolean;
+}
+
+const COMPARADOR_DROGUERIAS: DrogueriaPartner[] = [
+  { id: 'cobeca', name: 'Cobeca', logo: '/droguerias/cobeca.png' },
+  { id: 'insuaminca', name: 'Insuaminca', logo: '/droguerias/insuaminca2.png' },
+  { id: 'nena', name: 'Nena', logo: '/droguerias/nena.png' },
+  { id: 'zakipharma', name: 'Zakipharma', logo: '/droguerias/zakipharma.png' },
+  { id: 'del-oeste', name: 'Del Oeste', logo: '/droguerias/del-oeste.png' },
+  { id: 'vitalclinic', name: 'VitalClinic', logo: '/droguerias/vitalclinic.png' },
+  { id: 'intercontinental', name: 'Intercontinental', logo: '/droguerias/intercontinental.svg' },
+  { id: 'farmaceutica24', name: 'Farmaceutica24', logo: '/droguerias/farmaceutica24.jpg' },
+  { id: 'santo-remedio', name: 'Santo Remedio', logo: '/droguerias/santo-remedio.png' },
+  { id: 'drovencentro', name: 'Drovencentro', logo: '/droguerias/drovencentro.png' },
+  { id: 'mastranto', name: 'Mastranto', logo: '/droguerias/mastranto.webp', comingSoon: true },
+  { id: 'drocerca', name: 'Drocerca', logo: '/droguerias/drocerca.png', comingSoon: true },
+  { id: 'drosurven', name: 'Drosurven', logo: '/droguerias/drosurven.jpg', comingSoon: true },
+  { id: 'drotaca', name: 'Drotaca', logo: '/droguerias/drotaca.png', comingSoon: true },
+  { id: 'dromega', name: 'Dromega', logo: '/droguerias/dromega.png', comingSoon: true },
+];
+
+interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+const FAQS: FaqItem[] = [
+  {
+    id: 'homologacion',
+    question: '¿Qué significa que Smart Pharma 2.2.2 esté homologada?',
+    answer: 'Significa que el software cumple estrictamente con todas las normativas fiscales y sanitarias exigidas por los entes reguladores en Venezuela (SENIAT y otros). Esto garantiza que tu farmacia opere dentro de la legalidad total, evitando sanciones y asegurando procesos de facturación transparentes.',
+  },
+  {
+    id: 'integracion-cobeca',
+    question: '¿Cómo es la integración con Droguería COBECA?',
+    answer: 'Smart Pharma está diseñado para comunicarse directamente con el ecosistema de COBECA. Esto permite realizar pedidos automáticos basados en tus niveles de inventario, recibir facturas digitales de forma inmediata y sincronizar catálogos de productos y precios en tiempo real.',
+  },
+  {
+    id: 'soporte',
+    question: '¿Qué tipo de soporte técnico ofrecen?',
+    answer: 'Contamos con un equipo de expertos dedicado exclusivamente al sector farmacéutico. Puedes contactarnos vía WhatsApp al +58 (424) 629-9954, por correo a atcsitco@cobeca.com en los horarios indicados en la sección de contacto, o solicitar asistencia remota y presencial según la necesidad.',
+  },
+  {
+    id: 'migracion',
+    question: '¿Es posible migrar los datos de mi sistema anterior?',
+    answer: 'Sí, contamos con herramientas de migración de datos que facilitan la transición desde otros sistemas administrativos. Nuestro equipo técnico evalúa tu base de datos actual para asegurar que la información de inventario se traslade de forma segura y eficiente.',
+  },
+  {
+    id: 'hardware-pos',
+    question: '¿Qué requisitos de hardware necesito para instalar SITCO POS?',
+    answer: 'Nuestros sistemas están optimizados para funcionar en equipos estándar de oficina. Recomendamos un procesador i5 6th o superior, al menos 12 GB de memoria RAM y sistema operativo Windows 10 o superior para garantizar una experiencia fluida y rápida en el punto de venta.',
+  },
+];
+
 export default function Home() {
   const [formData, setFormData] = useState({
     nombre: '',
@@ -42,6 +195,7 @@ export default function Home() {
 
   const [showForm, setShowForm] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
   const handleContactSubmit = (e: React.FormEvent) => {
@@ -113,6 +267,19 @@ export default function Home() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [showPaymentModal]);
 
+  useEffect(() => {
+    if (!selectedProduct) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedProduct(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [selectedProduct]);
+
   return (
     <main className="min-h-screen font-sans overflow-x-hidden text-white
       bg-fixed bg-no-repeat
@@ -165,6 +332,16 @@ export default function Home() {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* --- MODAL DETALLE DE PRODUCTO --- */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <ProductDetailModal
+            product={selectedProduct}
+            onClose={() => setSelectedProduct(null)}
+          />
         )}
       </AnimatePresence>
       
@@ -304,60 +481,26 @@ export default function Home() {
         </div>
 
         <div className="grid md:grid-cols-6 md:grid-rows-2 gap-4">
-          <div className="md:col-span-3 md:row-span-2 bg-white/10 backdrop-blur-lg p-8 rounded-[2rem] border border-white/20 flex flex-col justify-between hover:bg-white/20 transition-all group shadow-2xl">
-            <div>
-              <div className="bg-white text-[#1877F2] w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xl">
-                <BarChart3 size={32} />
-              </div>
-              <h3 className="text-3xl font-black mb-4">Smart Pharma</h3>
-              <p className="text-white/70 text-lg leading-relaxed font-light">
-                Nuestra herramienta líder de Inteligencia de Negocios. Analiza reportes, ventas y proyecciones con datos en tiempo real.
-              </p>
-            </div>
-            <ul className="mt-8 space-y-3 text-sm font-medium">
-              <li className="flex items-center gap-2"><span className="text-[#7bc143]">✔</span> Reportes de Análisis Avanzado</li>
-              <li className="flex items-center gap-2"><span className="text-[#7bc143]">✔</span> Interfaz Intuitiva</li>
-              <li className="flex items-center gap-2"><span className="text-[#7bc143]">✔</span> Optimización de Inventarios</li>
-            </ul>
-          </div>
-
-          <div className="md:col-span-3 bg-white/5 backdrop-blur-md p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all group">
-            <div className="flex gap-6 items-start">
-              <div className="bg-white/10 w-12 h-12 rounded-xl flex items-center justify-center group-hover:bg-[#7bc143] transition-colors">
-                <ArrowRight size={24} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-2">Comparador SITCO</h3>
-                <p className="text-white/60 text-sm">Analiza precios y disponibilidad entre proveedores de forma automatizada.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="md:col-span-3 lg:col-span-1 bg-white/5 backdrop-blur-sm p-6 rounded-3xl border border-white/10 flex flex-col items-center text-center justify-center hover:bg-white/10 transition-all">
-            <div className="text-white mb-4" >
-                <ShieldCheck size={32} />
-            </div>
-            <h3 className="font-bold text-sm uppercase tracking-tighter">SITCO POS</h3>
-            <p className="text-xs text-white/50 mt-2">Punto de Venta robusto.</p>
-          </div>
-
-          <div className="md:col-span-3 lg:col-span-2 bg-white/5 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 flex flex-col justify-center hover:bg-white/10 transition-all">
-            <h3 className="font-bold mb-2 flex items-center gap-2">
-              <DatabaseBackup size={24} className="text-[#7bc143]"/> Gestor de Respaldo
-            </h3>
-            <p className="text-sm text-white/50">Protección crítica con backups automáticos.</p>
-          </div>
+          {PRODUCTS.filter((p) => p.layout !== 'compact-row').map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onClick={() => setSelectedProduct(product)}
+            />
+          ))}
         </div>
 
         <div className="grid md:grid-cols-4 gap-4 mt-4">
-          <div className="bg-white/5 backdrop-blur-md p-6 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all">
-            <Lectern size={28} className="mb-3 text-[#7bc143]"/>
-            <h3 className="font-bold text-sm">Visor de Precios</h3>
-            <p className="text-xs text-white/50">Transparencia inmediata para el cliente.</p>
-          </div>
+          {PRODUCTS.filter((p) => p.layout === 'compact-row').map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onClick={() => setSelectedProduct(product)}
+            />
+          ))}
           <div className="md:col-span-3 bg-gradient-to-r from-[#7bc143] to-[#6ab03a] p-6 rounded-[2rem] flex items-center justify-between shadow-2xl">
             <span className="text-slate-950 font-black italic text-lg">"Comprometidos, Eficientes y Competitivos."</span>
-            <button className="text-xs font-bold uppercase tracking-widest bg-slate-950 text-white px-6 py-3 rounded-xl hover:scale-105 transition-transform">Ver Catálogo</button>
+            {/*<button className="text-xs font-bold uppercase tracking-widest bg-slate-950 text-white px-6 py-3 rounded-xl hover:scale-105 transition-transform">Ver Catálogo</button>*/}
           </div>
         </div>
       </section>              
@@ -496,6 +639,23 @@ export default function Home() {
         </div>
       </section>
 
+      {/* --- SECCIÓN FAQ --- */}
+      <section id="faq" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/10">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-12 text-center">
+            <span className="inline-block mb-4 text-[10px] font-black uppercase tracking-widest text-[#7bc143] border border-[#7bc143]/40 bg-[#7bc143]/10 px-4 py-1.5 rounded-full">
+              Centro de Ayuda SITCO
+            </span>
+            <h2 className="text-4xl font-black mb-4">Preguntas Frecuentes</h2>
+            <p className="text-white/60 max-w-2xl mx-auto font-light">
+              Todo lo que necesitas saber para potenciar tu farmacia con nuestra tecnología.
+            </p>
+          </div>
+
+          <FaqAccordion items={FAQS} />
+        </div>
+      </section>
+
       {/* --- BOTÓN FLOTANTE --- */}
       <motion.a href="#" className="fixed bottom-8 right-8 z-50 bg-white/10 backdrop-blur-xl p-5 rounded-full border border-white/20 shadow-2xl group hover:bg-[#7bc143] transition-all">
         <ArrowUp className="text-white transition-transform group-hover:-translate-y-1" size={24} />
@@ -539,6 +699,72 @@ function FeatureCard({ icon, title, desc }: FeatureCardProps) {
   );
 }
 
+function FaqAccordion({ items }: { items: FaqItem[] }) {
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  const toggle = (id: string) => {
+    setOpenId((prev) => (prev === id ? null : id));
+  };
+
+  return (
+    <div className="space-y-3">
+      {items.map((faq) => {
+        const isOpen = openId === faq.id;
+        return (
+          <div
+            key={faq.id}
+            className={`rounded-[1.25rem] border backdrop-blur-md overflow-hidden transition-all duration-300 ${
+              isOpen
+                ? 'bg-white/15 border-[#7bc143]/40 shadow-lg shadow-[#7bc143]/10'
+                : 'bg-white/10 border-white/20 hover:bg-white/15 hover:border-white/30'
+            }`}
+          >
+            <button
+              type="button"
+              onClick={() => toggle(faq.id)}
+              aria-expanded={isOpen}
+              className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left md:px-6 md:py-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7bc143] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            >
+              <span className={`font-bold text-base md:text-lg leading-snug transition-colors ${isOpen ? 'text-[#7bc143]' : 'text-white'}`}>
+                {faq.question}
+              </span>
+              <span className={`shrink-0 flex items-center justify-center w-8 h-8 rounded-xl border transition-all ${
+                isOpen
+                  ? 'bg-[#7bc143] border-[#7bc143] text-white'
+                  : 'bg-white/10 border-white/20 text-white/70'
+              }`}>
+                <ChevronDown
+                  size={18}
+                  className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                />
+              </span>
+            </button>
+
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-5 pb-5 md:px-6 md:pb-6 pt-0">
+                    <div className="h-px bg-gradient-to-r from-[#7bc143]/50 via-white/20 to-transparent mb-4" />
+                    <p className="text-white/75 text-sm md:text-base leading-relaxed font-light">
+                      {faq.answer}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function BlogCard({ date, title, category }: BlogCardProps) {
     return (
       <motion.div whileHover={{ y: -10 }} className="group cursor-pointer">
@@ -547,4 +773,321 @@ function BlogCard({ date, title, category }: BlogCardProps) {
         <h4 className="text-xl font-bold group-hover:text-[#7bc143] transition-colors">{title}</h4>
       </motion.div>
     );
+}
+
+const LAYOUT_CLASSES: Record<Product['layout'], string> = {
+  featured: 'md:col-span-3 md:row-span-2 bg-white/10 backdrop-blur-lg p-8 rounded-[2rem] border border-white/20 shadow-2xl',
+  wide: 'md:col-span-3 bg-white/5 backdrop-blur-md p-8 rounded-[2rem] border border-white/10',
+  compact: 'md:col-span-3 lg:col-span-1 bg-white/5 backdrop-blur-sm p-6 rounded-3xl border border-white/10',
+  medium: 'md:col-span-3 lg:col-span-2 bg-white/5 backdrop-blur-md p-6 rounded-[2rem] border border-white/10',
+  'compact-row': 'bg-white/5 backdrop-blur-md p-6 rounded-[2rem] border border-white/10',
+};
+
+function ProductCard({ product, onClick }: { product: Product; onClick: () => void }) {
+  const isFeatured = product.layout === 'featured';
+  const isWide = product.layout === 'wide';
+  const isCompact = product.layout === 'compact';
+  const isMedium = product.layout === 'medium';
+  const isCompactRow = product.layout === 'compact-row';
+
+  return (
+    <motion.button
+      type="button"
+      onClick={onClick}
+      whileHover={{ scale: isFeatured ? 1.01 : 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`group text-left w-full flex flex-col justify-between hover:bg-white/20 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7bc143] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${LAYOUT_CLASSES[product.layout]}`}
+      aria-label={`Ver detalles de ${product.title}`}
+    >
+      {isFeatured && (
+        <>
+          <div>
+            <div className="bg-white text-[#1877F2] w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-xl">
+              {product.icon}
+            </div>
+            <h3 className="text-3xl font-black mb-4">{product.title}</h3>
+            <p className="text-white/70 text-lg leading-relaxed font-light">{product.shortDesc}</p>
+          </div>
+          <ul className="mt-8 space-y-3 text-sm font-medium">
+            {product.features.slice(0, 3).map((f) => (
+              <li key={f} className="flex items-center gap-2">
+                <span className="text-[#7bc143]">✔</span> {f}
+              </li>
+            ))}
+          </ul>
+          <span className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white opacity-0 group-hover:opacity-100 transition-opacity">
+            Ver detalles <ArrowRight size={14} />
+          </span>
+        </>
+      )}
+
+      {isWide && (
+        <div className="flex gap-6 items-start">
+          <div className="bg-white/10 w-12 h-12 rounded-xl flex items-center justify-center group-hover:bg-[#7bc143] transition-colors shrink-0">
+            {product.icon}
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-xl font-bold mb-2">{product.title}</h3>
+            <p className="text-white/60 text-sm">{product.shortDesc}</p>
+            <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-[#7bc143] opacity-0 group-hover:opacity-100 transition-opacity">
+              Ver detalles <ArrowRight size={12} />
+            </span>
+          </div>
+        </div>
+      )}
+
+      {isCompact && (
+        <div className="flex flex-col items-center text-center justify-center h-full">
+          <div className="text-white mb-4 group-hover:scale-110 transition-transform">{product.icon}</div>
+          <h3 className="font-bold text-sm uppercase tracking-tighter">{product.title}</h3>
+          <p className="text-xs text-white/50 mt-2">{product.shortDesc}</p>
+          <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-[#7bc143] opacity-0 group-hover:opacity-100 transition-opacity">
+            Ver más
+          </span>
+        </div>
+      )}
+
+      {isMedium && (
+        <div>
+          <h3 className="font-bold mb-2 flex items-center gap-2">
+            <span className="text-[#7bc143]">{product.icon}</span> {product.title}
+          </h3>
+          <p className="text-sm text-white/50">{product.shortDesc}</p>
+          <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-[#7bc143] opacity-0 group-hover:opacity-100 transition-opacity">
+            Ver detalles <ArrowRight size={12} />
+          </span>
+        </div>
+      )}
+
+      {isCompactRow && (
+        <>
+          <span className="text-[#7bc143] group-hover:scale-110 transition-transform inline-block">{product.icon}</span>
+          <h3 className="font-bold text-sm mt-3">{product.title}</h3>
+          <p className="text-xs text-white/50 mt-2">{product.shortDesc}</p>
+          <span className="mt-3 text-[10px] font-bold uppercase tracking-widest text-white opacity-0 group-hover:opacity-100 transition-opacity">
+            Ver más
+          </span>
+        </>
+      )}
+    </motion.button>
+  );
+}
+
+function getDrogueriaInitials(name: string) {
+  const words = name.trim().split(/\s+/);
+  if (words.length >= 2) {
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+}
+
+function DrogueriaLogo({ partner }: { partner: DrogueriaPartner }) {
+  const [hasError, setHasError] = useState(false);
+
+  if (hasError) {
+    return (
+      <div
+        className={`w-full h-12 rounded-lg flex items-center justify-center mb-2 ${
+          partner.comingSoon ? 'bg-white/10 text-white/40' : 'bg-white text-[#1877F2]'
+        }`}
+      >
+        <span className="text-sm font-black">{getDrogueriaInitials(partner.name)}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`relative w-full h-14 mb-2 rounded-lg overflow-hidden flex items-center justify-center px-2 ${
+        partner.comingSoon ? 'bg-white/10' : 'bg-white'
+      }`}
+    >
+      <Image
+        src={partner.logo}
+        alt={`Logo ${partner.name}`}
+        width={140}
+        height={56}
+        className={`object-contain max-h-11 w-auto max-w-full ${
+          partner.comingSoon ? 'opacity-50 grayscale' : ''
+        }`}
+        onError={() => setHasError(true)}
+      />
+    </div>
+  );
+}
+
+function DrogueriasCarousel({ partners }: { partners: DrogueriaPartner[] }) {
+  const swiperRef = useRef<SwiperType | null>(null);
+  const activeCount = partners.filter((p) => !p.comingSoon).length;
+  const soonCount = partners.filter((p) => p.comingSoon).length;
+
+  return (
+    <div className="mb-8 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm p-4 md:p-5">
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div>
+          <h4 className="text-xs font-black uppercase tracking-widest text-[#7bc143] mb-1">
+            Droguerías compatibles
+          </h4>
+          <p className="text-white/60 text-xs md:text-sm font-light">
+            {activeCount} integradas · {soonCount} próximamente
+          </p>
+        </div>
+        <div className="flex gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={() => swiperRef.current?.slidePrev()}
+            className="p-2 rounded-xl border border-white/20 bg-white/10 text-white hover:bg-white/20 transition-all"
+            aria-label="Droguería anterior"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => swiperRef.current?.slideNext()}
+            className="p-2 rounded-xl border border-white/20 bg-white/10 text-white hover:bg-white/20 transition-all"
+            aria-label="Siguiente droguería"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      <Swiper
+        onSwiper={(swiper) => { swiperRef.current = swiper; }}
+        modules={[Autoplay]}
+        spaceBetween={12}
+        slidesPerView={2.15}
+        breakpoints={{
+          480: { slidesPerView: 2.5 },
+          640: { slidesPerView: 3 },
+          768: { slidesPerView: 3.5 },
+        }}
+        autoplay={{ delay: 2800, disableOnInteraction: false, pauseOnMouseEnter: true }}
+        loop
+        className="!overflow-hidden !pb-1"
+      >
+        {partners.map((partner) => (
+          <SwiperSlide key={partner.id} className="!h-auto">
+            <div
+              className={`relative flex flex-col items-center text-center rounded-xl border px-3 py-4 min-h-[7.5rem] transition-all ${
+                partner.comingSoon
+                  ? 'bg-white/5 border-white/15 border-dashed opacity-80'
+                  : 'bg-white/15 border-white/25 hover:border-[#7bc143]/50 hover:bg-white/20'
+              }`}
+            >
+              {partner.comingSoon && (
+                <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[8px] font-black uppercase tracking-wider bg-white/20 text-white/90 px-2 py-0.5 rounded-full whitespace-nowrap border border-white/20">
+                  Próximamente
+                </span>
+              )}
+              <DrogueriaLogo partner={partner} />
+              <p className={`text-xs font-bold leading-tight ${partner.comingSoon ? 'text-white/50' : 'text-white'}`}>
+                {partner.name}
+              </p>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+}
+
+function ProductDetailModal({ product, onClose }: { product: Product; onClose: () => void }) {
+  return (
+    <motion.div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      aria-modal="true"
+      role="dialog"
+      aria-labelledby="product-modal-title"
+    >
+      <div
+        className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 24, scale: 0.96 }}
+        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+        className="relative z-[101] flex w-full max-w-2xl max-h-[calc(100dvh-2rem)] flex-col overflow-hidden rounded-3xl border border-white/20 bg-gradient-to-br from-[#1877F2]/95 via-[#1a6fd4]/95 to-[#48C6EF]/90 shadow-2xl shadow-black/40 backdrop-blur-2xl"
+      >
+        <div className="absolute inset-0 bg-[url('/Sitco2.png')] bg-[length:30%] bg-left bg-no-repeat opacity-[0.04] pointer-events-none" />
+
+        <div className="relative flex shrink-0 items-start justify-between gap-4 border-b border-white/15 px-6 py-5 md:px-8">
+          <div className="flex items-start gap-4 min-w-0">
+            <div className="shrink-0 bg-white text-[#1877F2] w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl">
+              {product.icon}
+            </div>
+            <div className="min-w-0">
+              {product.badge && (
+                <span className="inline-block mb-1.5 text-[10px] font-black uppercase tracking-widest bg-[#7bc143] text-white px-3 py-1 rounded-full">
+                  {product.badge}
+                </span>
+              )}
+              <p className="text-[11px] font-bold uppercase tracking-widest text-white/50 mb-1">{product.category}</p>
+              <h3 id="product-modal-title" className="text-2xl md:text-3xl font-black text-white leading-tight">
+                {product.title}
+              </h3>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="shrink-0 rounded-xl border border-white/20 bg-white/10 p-2.5 text-white transition-all hover:bg-white/20"
+            aria-label="Cerrar"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="glass-scrollbar-light relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6 md:px-8 md:py-8">
+          <p className="text-white/90 text-base md:text-lg leading-relaxed font-light mb-8">
+            {product.fullDesc}
+          </p>
+
+          {product.id === 'comparador-sitco' && (
+            <DrogueriasCarousel partners={COMPARADOR_DROGUERIAS} />
+          )}
+
+          <h4 className="text-xs font-black uppercase tracking-widest text-[#7bc143] mb-4">
+            Características principales
+          </h4>
+          <ul className="grid sm:grid-cols-2 gap-3 mb-8">
+            {product.features.map((feature) => (
+              <li
+                key={feature}
+                className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/10 text-sm font-medium text-white/90"
+              >
+                <span className="shrink-0 w-6 h-6 rounded-full bg-[#7bc143]/20 flex items-center justify-center text-[#7bc143] text-xs">✔</span>
+                {feature}
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-white/10">
+            <a
+              href="#contacto"
+              onClick={onClose}
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-[#7bc143] text-white font-black py-3.5 px-6 rounded-xl hover:bg-white hover:text-slate-950 transition-all shadow-lg text-sm uppercase tracking-wider"
+            >
+              Solicitar información <Send size={16} />
+            </a>
+            <a
+              href="https://wa.me/584246299954"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-white/10 border border-white/20 text-white font-bold py-3.5 px-6 rounded-xl hover:bg-white/20 transition-all text-sm"
+            >
+              WhatsApp Soporte
+            </a>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
 }
