@@ -51,12 +51,12 @@ const PRODUCTS: Product[] = [
     shortDesc: 'Nuestra herramienta líder de Inteligencia de Negocios. Analiza reportes, ventas y proyecciones con datos en tiempo real.',
     fullDesc: 'Smart Pharma es la solución insignia de SITCO para el sector farmacéutico. Integra análisis de ventas, proyecciones de demanda y reportes administrativos en una plataforma homologada por el SENIAT. Diseñada para farmacias corporativas, afiliadas e independientes que buscan decisiones basadas en datos.',
     features: [
-      'Reportes de Análisis Avanzado',
-      'Interfaz Intuitiva',
-      'Optimización de Inventarios',
+      'Búsqueda Rápida y Precisa',
+      'Control de Lotes y Fechas de Vencimiento',
+      'Etiquetado Automático',
+      'Órdenes de Compra Sugeridas',
       'Homologación SENIAT v2.2.2',
-      'Dashboards en tiempo real',
-      'Gestión multi-sucursal',
+      'Inventario Óptimo',      
     ],
     category: 'Inteligencia de Negocios',
     badge: 'Producto estrella',
@@ -65,7 +65,7 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 'comparador-sitco',
-    title: 'Comparador SITCO',
+    title: 'Smart Comparador',
     shortDesc: 'Analiza precios y disponibilidad entre proveedores de forma automatizada.',
     fullDesc: 'El Comparador SITCO agiliza la toma de decisiones de compra al contrastar precios, existencias y condiciones comerciales entre múltiples proveedores. Reduce tiempos de cotización y maximiza el margen de tu farmacia con información actualizada.',
     features: [
@@ -77,21 +77,6 @@ const PRODUCTS: Product[] = [
     category: 'Compras',
     icon: <ArrowRight size={24} />,
     layout: 'wide',
-  },
-  {
-    id: 'sitco-pos',
-    title: 'SITCO POS',
-    shortDesc: 'Punto de Venta robusto.',
-    fullDesc: 'SITCO POS es un sistema de punto de venta diseñado para el ritmo exigente de las farmacias. Procesa transacciones de forma rápida y segura, con control de caja, facturación y sincronización con el resto del ecosistema SITCO.',
-    features: [
-      'Facturación ágil',
-      'Control de caja integrado',
-      'Soporte para múltiples formas de pago',
-      'Sincronización en la nube',
-    ],
-    category: 'Ventas',
-    icon: <ShieldCheck size={32} />,
-    layout: 'compact',
   },
   {
     id: 'gestor-respaldo',
@@ -106,8 +91,22 @@ const PRODUCTS: Product[] = [
     ],
     category: 'Seguridad',
     icon: <DatabaseBackup size={24} />,
-    layout: 'medium',
+    layout: 'compact',
   },
+  {
+    id: 'smart-business',
+    title: 'Smart Business',
+    shortDesc: 'Inteligencia de Negocios.',
+    fullDesc: 'SITCO POS es un sistema de punto de venta diseñado para el ritmo exigente de las farmacias. Procesa transacciones de forma rápida y segura, con control de caja, facturación y sincronización con el resto del ecosistema SITCO.',
+    features: [
+      'Dashboard en tiempo real',
+      'Gestion Multi-sucursal',      
+      'Sincronización en la nube',
+    ],
+    category: 'Inteligencia de Negocios',
+    icon: <ShieldCheck size={32} />,
+    layout: 'medium',
+  },  
   {
     id: 'visor-precios',
     title: 'Visor de Precios',
@@ -179,7 +178,7 @@ const FAQS: FaqItem[] = [
   },
   {
     id: 'hardware-pos',
-    question: '¿Qué requisitos de hardware necesito para instalar SITCO POS?',
+    question: '¿Qué requisitos de hardware necesito para instalar SMARTPHARMA?',
     answer: 'Nuestros sistemas están optimizados para funcionar en equipos estándar de oficina. Recomendamos un procesador i5 6th o superior, al menos 12 GB de memoria RAM y sistema operativo Windows 10 o superior para garantizar una experiencia fluida y rápida en el punto de venta.',
   },
 ];
@@ -353,7 +352,7 @@ export default function Home() {
           </motion.div>          
         </div>
         <div className="hidden md:flex gap-2 text-sm font-semibold bg-black/20 p-1.5 rounded-full border border-white/10">
-          <a href="#nosotros" className="px-5 py-2 rounded-full hover:bg-white/10 transition-colors">Prueba</a>
+          <a href="#nosotros" className="px-5 py-2 rounded-full hover:bg-white/10 transition-colors">Nosotros</a>
           <a href="#productos" className="px-5 py-2 rounded-full hover:bg-white/10 transition-colors">Productos</a>
           <a href="#blog" className="px-5 py-2 rounded-full hover:bg-white/10 transition-colors">Blog</a>
           <a href="#contacto" className="px-5 py-2 rounded-full hover:bg-white/20 transition-colors text-[#7bc143]">Contacto</a>
@@ -643,11 +642,11 @@ export default function Home() {
       <section id="faq" className="max-w-7xl mx-auto px-6 py-24 border-t border-white/10">
         <div className="max-w-3xl mx-auto">
           <div className="mb-12 text-center">
-            <span className="inline-block mb-4 text-[10px] font-black uppercase tracking-widest text-[#7bc143] border border-[#7bc143]/40 bg-[#7bc143]/10 px-4 py-1.5 rounded-full">
+            {/*<span className="inline-block mb-4 text-[10px] font-black uppercase tracking-widest text-[#7bc143] border border-[#7bc143]/40 bg-[#7bc143]/10 px-4 py-1.5 rounded-full">
               Centro de Ayuda SITCO
-            </span>
+            </span>*/}
             <h2 className="text-4xl font-black mb-4">Preguntas Frecuentes</h2>
-            <p className="text-white/60 max-w-2xl mx-auto font-light">
+            <p className="text-white/90 max-w-2xl mx-auto font-light">
               Todo lo que necesitas saber para potenciar tu farmacia con nuestra tecnología.
             </p>
           </div>
